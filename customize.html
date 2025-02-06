@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Barlow', sans-serif;
+            font-style: normal;
+            font-size: 16px;
+            line-height: 24px;
+            color: rgb(80, 76, 68);
+            min-width: 250px;
+            /* Make popup wider */
+            min-height: 200px;
+            /* Make popup taller */
+            background-color: rgb(254, 250, 241);
+        }
+
+        a {
+            color: rgb(80, 76, 68);
+            font-size: 10px;
+            display: block;
+            /* Ensure the link is displayed as a block element */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- add local image -->
+    <img src="icon.png" alt="icon">
+    <hr style="border: 1px solid rgb(163, 154, 148);">
+    <h2>Personalize your categories</h2>
+
+    <!-- add a list of checkboxes -->
+    <form>
+        <!-- <input type="checkbox" id="gov" checked>
+        <label for="gov">Government + Politics</label><br>
+        <input type="checkbox" id="ag" checked>
+        <label for="ag">Ag + Environment</label><br>
+        <input type="checkbox" id="health" checked>
+        <label for="health">Health Care</label><br>
+        <input type="checkbox" id="justice" checked>
+        <label for="justice">Justice</label><br> -->
+
+        <input type="checkbox" id="dc">
+        <label for="dc">DC Bureau</label><br>
+        <input type="checkbox" id="imm">
+        <label for="imm">Civil Rights + Immigration</label><br>
+        <input type="checkbox" id="police">
+        <label for="police">Criminal Justice + Policing</label><br>
+        <input type="checkbox" id="econ" checked>
+        <label for="econ">Working + Economy</label><br>
+    </form>
+
+    <div>
+        <a href="popup.html">Back</a>
+    </div>
+
+    <style>
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgb(163, 154, 148);
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: rgb(255, 189, 89);
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px rgb(255, 189, 89);
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 5px;
+        }
+
+        .slider.round:before {
+            border-radius: 5px;
+        }
+
+        h2 {
+            margin-bottom: 5px;
+            /* Add margin for spacing */
+        }
+
+        p {
+            margin-bottom: 10px;
+            /* Add margin for spacing */
+            margin-top: 0px;
+        }
+
+        img {
+            margin-bottom: 0px;
+            width: 25px;
+        }
+
+        hr {
+            margin-top: 0px;
+            margin-bottom: 10px;
+
+        }
+    </style>
+    <script src="customize.js"></script>
+
+</body>
+
+</html>
