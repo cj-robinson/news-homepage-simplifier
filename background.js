@@ -8,3 +8,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
   }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete') {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            if (tabs[0].id === tabId) {
+                chrome.runtime.sendMessage({ action: 'toggleSwitchOff' });
+            }
+        });
+    }
+});
