@@ -15,13 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
             saveObj[this.id] = this.checked;
             chrome.storage.sync.set(saveObj, function() {
                 console.log('Checkbox state changed, reloading page...');
-                chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                    chrome.tabs.reload(tabs[0].id);
-                });
-                
+                chrome.runtime.sendMessage({ action: 'refreshPage' });
+                chrome.runtime.sendMessage({ action: 'run' });
 
-                // Send message to toggle the switch off
-                chrome.runtime.sendMessage({ action: 'toggleSwitchOff' });
             });
         });
     });
