@@ -100,9 +100,11 @@ async function fetchRSS() {
         // get the first article in the Education category
         const educationArticle = recentArticles.find((article) => findFirstCategory(article) == "Education");
 
-        const dcArticle = recentArticles.find((article) => findFirstCategory(article) == "DC Bureau");
+        const dcArticle = recentArticles.find((article) => findFirstCategory(article) == "DC Dispatch");
 
-        const immArticle = recentArticles.find((article) => findFirstCategory(article) == "Civil Rights + Immigration");
+        const civilArticle = recentArticles.find((article) => findFirstCategory(article) == "Civil Rights");
+
+        const immArticle = recentArticles.find((article) => findFirstCategory(article) == "Immigration");
 
         const polArticle = recentArticles.find((article) => findFirstCategory(article) == "Criminal Justice + Policing");
 
@@ -115,6 +117,9 @@ async function fetchRSS() {
             if (immArticle) firstArticles.push(immArticle);
         }
 
+        if (preferences.civil) {
+            if (civilArticle) firstArticles.push(civilArticle);
+        }
 
         if (preferences.police) {
             if (polArticle) firstArticles.push(polArticle);
@@ -182,17 +187,25 @@ async function fetchRSS() {
             const contentWrapper = document.createElement("div");
             contentWrapper.className = "article-content";
         
+            // Create image anchor tag
+            const imgAnchor = document.createElement("a");
+            imgAnchor.href = link;
+            imgAnchor.target = "_blank";
+
             // Create image
             const img = document.createElement("img");
             img.src = imgSrc;
             img.className = "attachment-large size-large wp-post-image";
             img.width = 200;
+            
+            // Append image to its anchor
+            imgAnchor.appendChild(img);
         
             // Create title container
             const titleContainer = document.createElement("div");
             titleContainer.className = "article-title";
             
-            // Create anchor tag
+            // Create title anchor tag
             const anchor = document.createElement("a");
             anchor.href = link;
             anchor.target = "_blank";
@@ -223,7 +236,7 @@ async function fetchRSS() {
             titleContainer.appendChild(anchor);
             titleContainer.appendChild(document.createElement("br"));
             titleContainer.appendChild(detailsDiv);
-            contentWrapper.appendChild(img);
+            contentWrapper.appendChild(imgAnchor);  // Changed from appendChild(img)
             contentWrapper.appendChild(titleContainer);
             articleDiv.appendChild(contentWrapper);
             articlesContainer.appendChild(articleDiv);

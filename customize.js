@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
                     chrome.tabs.reload(tabs[0].id);
                 });
+                
 
                 // Send message to toggle the switch off
                 chrome.runtime.sendMessage({ action: 'toggleSwitchOff' });
