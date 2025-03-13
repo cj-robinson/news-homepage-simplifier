@@ -8,8 +8,7 @@
       "storage"
     ],
     "host_permissions": [
-      "https://iowacapitaldispatch.com/*",
-      "https://cors-anywhere.herokuapp.com/*"
+      "https://iowacapitaldispatch.com/"
     ],
     "background": {
         "service_worker": "background.js"

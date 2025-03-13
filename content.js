@@ -4,13 +4,23 @@ function findFirstCategory(item) {
     return first_category.textContent;
 }
 
+// create function to get all categories of an article
+function getAllCategories(item) {
+    const categories = item.getElementsByTagName("category");
+    return Array.from(categories).map(cat => cat.textContent);
+}
+
 const style = document.createElement('style');
 style.textContent = `
 .horizontal-container {
     display: flex;
     flex-wrap: wrap; /* Allows wrapping to the next line if there are too many items */
     flex-direction: row;
+    justify-content: space-evenly;; 
     gap: 20px; /* Adjust the gap between elements as needed */
+    margin-left: 1em;
+    margin-right: 1em;
+
 }
 
 .horizontal-article {
@@ -37,7 +47,7 @@ style.textContent = `
     height: 200px; /* Adjust the height as needed */
     object-fit: cover; /* This will crop the image to fit the container */
     object-position: center; /* This will center the image within the container */
-    border-radius: 25px; 
+    border-radius: 15px; 
 }
 
 .category-header {
@@ -85,52 +95,54 @@ async function fetchRSS() {
         // get the most recent 100 articles
         const recentArticles = Array.from(items).slice(0, 500);
 
-        // get the first article in the Government + Politics category
-        const govArticle = recentArticles.find((article) => findFirstCategory(article) == "Government + Politics");
+        // track articles that have already been pulled
+        let usedArticles = new Set();
 
-        // get the first article in the Ag/Env category
-        const agArticle = recentArticles.find((article) => findFirstCategory(article) == "Ag + Environment");
+        // find first unused article for a given category
+        function findArticleForCategory(articles, category) {
+            const article = articles.find(article => {
+                const categories = getAllCategories(article);
+                if (categories.includes(category) && !usedArticles.has(article)) {
+                    usedArticles.add(article);
+                    return true;
+                }
+                return false;
+            });
+            return article ? { article, matchedCategory: category } : null;
+        }
+        
 
-        // get the first article in the Health Care category
-        const healthCareArticle = recentArticles.find((article) => findFirstCategory(article) == "Health Care");
-
-        // get the first article in the Justice category
-        const justiceArticle = recentArticles.find((article) => findFirstCategory(article) == "Justice");
-
-        // get the first article in the Education category
-        const educationArticle = recentArticles.find((article) => findFirstCategory(article) == "Education");
-
-        const dcArticle = recentArticles.find((article) => findFirstCategory(article) == "DC Dispatch");
-
-        const civilArticle = recentArticles.find((article) => findFirstCategory(article) == "Civil Rights");
-
-        const immArticle = recentArticles.find((article) => findFirstCategory(article) == "Immigration");
-
-        const polArticle = recentArticles.find((article) => findFirstCategory(article) == "Criminal Justice + Policing");
-
-        const econArticle = recentArticles.find((article) => findFirstCategory(article) == "Working + Economy");
-
-        // list all articles
+        const govArticle = findArticleForCategory(recentArticles, "Government + Politics");
+        const agArticle = findArticleForCategory(recentArticles, "Ag + Environment");
+        const healthCareArticle = findArticleForCategory(recentArticles, "Health Care");
+        const justiceArticle = findArticleForCategory(recentArticles, "Justice");
+        const educationArticle = findArticleForCategory(recentArticles, "Education");
+        
         const firstArticles = [govArticle, agArticle, healthCareArticle, justiceArticle, educationArticle];
-
+        
         if (preferences.imm) {
+            const immArticle = findArticleForCategory(recentArticles, "Immigration");
             if (immArticle) firstArticles.push(immArticle);
         }
 
         if (preferences.civil) {
+            const civilArticle = findArticleForCategory(recentArticles, "Civil Rights");
             if (civilArticle) firstArticles.push(civilArticle);
         }
 
         if (preferences.police) {
+            const polArticle = findArticleForCategory(recentArticles, "Criminal Justice + Policing");
             if (polArticle) firstArticles.push(polArticle);
         }
 
         if (preferences.dc) {
+            const dcArticle = findArticleForCategory(recentArticles, "DC Dispatch");
             if (dcArticle) firstArticles.push(dcArticle);
         }
 
 
-        if (preferences.econ) {
+        if (preferences.econArticle) {
+            const econArticle = findArticleForCategory(recentArticles, "Working + Economy");
             if (econArticle) firstArticles.push(econArticle);
         }
 
@@ -140,15 +152,16 @@ async function fetchRSS() {
 
         const header = document.createElement("h2");
 
-        // Create icon image
+        // create icon image
         const icon = document.createElement("img");
         icon.src = chrome.runtime.getURL("icon.png");
         icon.alt = "Icon";
         icon.style.width = "30px"; // Adjust the size as needed
         icon.style.height = "30px"; // Adjust the size as needed
         icon.style.marginRight = "10px"; // Adjust the margin as needed
+        icon.style.marginBottom = "5px"; // Adjust the margin as needed
 
-        // Append icon to header
+        // append icon to header
         header.appendChild(icon);
 
         // Create text node and append it after the icon
@@ -162,13 +175,14 @@ async function fetchRSS() {
                 return;
             }
         
-            const first_category = findFirstCategory(item)
-            const title = item.querySelector("title").textContent;
-            const link = item.querySelector("link").textContent;
-            const author = item.querySelector("creator").textContent;
-            const pubDate = item.querySelector("pubDate").textContent;
-
-            const contentEncoded = item.getElementsByTagName("content:encoded")[0];
+            const { article, matchedCategory } = item;
+            const title = article.querySelector("title").textContent;
+            const link = article.querySelector("link").textContent;
+            const author = article.querySelector("creator").textContent;
+            const pubDate = article.querySelector("pubDate").textContent;
+        
+            const contentEncoded = item.article.getElementsByTagName("content:encoded")[0];
+            console.log(contentEncoded);
             const parser = new DOMParser();
             const contentHTML = parser.parseFromString(contentEncoded.textContent, "text/html");
         
@@ -177,12 +191,11 @@ async function fetchRSS() {
         
             const articleDiv = document.createElement("div");
             articleDiv.className = "horizontal-article";
-        
-            // Category header
+            
             const categoryHeader = document.createElement("h2");
-            categoryHeader.textContent = first_category;
             categoryHeader.className = "category-header";
-        
+            categoryHeader.textContent = matchedCategory;
+
             // Create wrapper for image and title
             const contentWrapper = document.createElement("div");
             contentWrapper.className = "article-content";
