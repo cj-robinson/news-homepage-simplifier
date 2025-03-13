@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentTab = tabs[0];
         const url = new URL(currentTab.url);
 
-        if (!url.hostname.includes('iowacapitaldispatch.com')) {
+        if (!(url.hostname === 'iowacapitaldispatch.com' && (url.pathname === '/' || url.pathname.startsWith('/?')))) {
             window.location.href = 'redirect.html';
             return;
         }

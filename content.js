@@ -92,13 +92,15 @@ async function fetchRSS() {
         const xml = parser.parseFromString(text, "text/xml");
         const items = xml.querySelectorAll("item");
 
-        // get the most recent 100 articles
+        // get the most recent 500 articles
         const recentArticles = Array.from(items).slice(0, 500);
 
         // track articles that have already been pulled
         let usedArticles = new Set();
 
-        // find first unused article for a given category
+        // find article for a given category
+        // checks if article has one of the categories we need using getAllCategories
+        // makes sure it's not used previously
         function findArticleForCategory(articles, category) {
             const article = articles.find(article => {
                 const categories = getAllCategories(article);
@@ -156,15 +158,15 @@ async function fetchRSS() {
         const icon = document.createElement("img");
         icon.src = chrome.runtime.getURL("icon.png");
         icon.alt = "Icon";
-        icon.style.width = "30px"; // Adjust the size as needed
-        icon.style.height = "30px"; // Adjust the size as needed
-        icon.style.marginRight = "10px"; // Adjust the margin as needed
-        icon.style.marginBottom = "5px"; // Adjust the margin as needed
+        icon.style.width = "30px"; 
+        icon.style.height = "30px";
+        icon.style.marginRight = "10px"; 
+        icon.style.marginBottom = "5px";
 
         // append icon to header
         header.appendChild(icon);
 
-        // Create text node and append it after the icon
+        // create text node and append it after the icon
         const textNode = document.createTextNode("TODAY'S HEADLINES");
         header.appendChild(textNode);
 
@@ -175,56 +177,59 @@ async function fetchRSS() {
                 return;
             }
         
+            // take both article and matched category as item
             const { article, matchedCategory } = item;
+            // assign the rest of the variables from article object
             const title = article.querySelector("title").textContent;
             const link = article.querySelector("link").textContent;
             const author = article.querySelector("creator").textContent;
             const pubDate = article.querySelector("pubDate").textContent;
         
+            // get the content of the article from rss feed
             const contentEncoded = item.article.getElementsByTagName("content:encoded")[0];
-            console.log(contentEncoded);
             const parser = new DOMParser();
             const contentHTML = parser.parseFromString(contentEncoded.textContent, "text/html");
         
+            // starts image
             const imgElement = contentHTML.querySelector("img");
             const imgSrc = imgElement?.getAttribute("src");
         
+            // starts article text
             const articleDiv = document.createElement("div");
             articleDiv.className = "horizontal-article";
             
+            // get header of category
             const categoryHeader = document.createElement("h2");
             categoryHeader.className = "category-header";
             categoryHeader.textContent = matchedCategory;
 
-            // Create wrapper for image and title
+            // create wrapper for image and title
             const contentWrapper = document.createElement("div");
             contentWrapper.className = "article-content";
         
-            // Create image anchor tag
+            // create image anchor tag
             const imgAnchor = document.createElement("a");
             imgAnchor.href = link;
-            imgAnchor.target = "_blank";
 
-            // Create image
+            // create image itself
             const img = document.createElement("img");
             img.src = imgSrc;
             img.className = "attachment-large size-large wp-post-image";
             img.width = 200;
             
-            // Append image to its anchor
+            // append image to its anchor
             imgAnchor.appendChild(img);
         
-            // Create title container
+            // create title container
             const titleContainer = document.createElement("div");
             titleContainer.className = "article-title";
             
-            // Create title anchor tag
+            // create title anchor tag
             const anchor = document.createElement("a");
             anchor.href = link;
-            anchor.target = "_blank";
             anchor.textContent = title;
 
-            // Create text nodes for author and pubDate
+            // create text nodes for author and pubDate
             const authorNode = document.createTextNode(`By ${author}`);
             const formatDate = (dateStr) => {
                 const date = new Date(dateStr);
@@ -237,14 +242,14 @@ async function fetchRSS() {
               
             const pubDateNode = document.createTextNode(`Published: ${formatDate(pubDate)}`);   
 
-            // Create details div
+            // create details div
             const detailsDiv = document.createElement('div');
             detailsDiv.className = 'details';
             detailsDiv.appendChild(authorNode);
             detailsDiv.appendChild(document.createElement("br"));
             detailsDiv.appendChild(pubDateNode);
 
-            // Append elements
+            // append elements to html
             titleContainer.appendChild(categoryHeader);
             titleContainer.appendChild(anchor);
             titleContainer.appendChild(document.createElement("br"));
@@ -255,7 +260,7 @@ async function fetchRSS() {
             articlesContainer.appendChild(articleDiv);
         });
 
-        // Insert between header and footer
+        // insert between header and footer
         const footer = document.querySelector('footer');
         footer.parentNode.insertBefore(articlesContainer, footer);
 
