@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Iowa Capital Dispatch - Simplified",
-  "description": "A basic example extension with only required keys",
-  "version": "1.2",
+  "description": "Simplify your view of the Iowa Capital Dispatch homepage.",
+  "version": "1.21",
   "permissions": [
     "scripting",
     "activeTab",
