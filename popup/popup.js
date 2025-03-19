@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const url = new URL(currentTab.url);
 
         if (!(url.hostname === 'iowacapitaldispatch.com' && (url.pathname === '/' || url.pathname.startsWith('/?')))) {
-            window.location.href = 'redirect.html';
+            window.location.href = '../redirect/redirect.html';
             return;
         }
 

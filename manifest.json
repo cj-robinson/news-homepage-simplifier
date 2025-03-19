@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Iowa Capital Dispatch - Simplified",
+  "description": "A basic example extension with only required keys",
   "version": "1.2",
   "permissions": [
     "scripting",
@@ -18,7 +19,7 @@
     {
       "resources": [
         "icon.png",
-        "redirect.html"
+        "redirect/redirect.html"
       ],
       "matches": [
         "<all_urls>"
@@ -29,6 +30,6 @@
     "48": "icon.png"
   },
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   }
 }

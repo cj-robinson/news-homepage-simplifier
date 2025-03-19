@@ -156,7 +156,7 @@ async function fetchRSS() {
 
         // create icon image
         const icon = document.createElement("img");
-        icon.src = chrome.runtime.getURL("icon.png");
+        icon.src = chrome.runtime.getURL("../icon.png");
         icon.alt = "Icon";
         icon.style.width = "30px"; 
         icon.style.height = "30px";
